@@ -1,0 +1,51 @@
+FROM php:8.4-cli AS composer_builder
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    zip \
+    unzip \
+    curl \
+    git \
+    libzip-dev \
+    libonig-dev \
+    libssl-dev \
+    pkg-config \
+    librdkafka-dev \
+    libpq-dev \
+    procps \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install zip pdo pdo_pgsql \
+    && pecl install rdkafka opentelemetry \
+    && docker-php-ext-enable rdkafka opentelemetry
+
+WORKDIR /var/www/html
+
+COPY composer.json composer.lock ./
+
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+FROM php:8.4-cli AS production
+
+RUN apt-get update && apt-get install -y procps && rm -rf /var/lib/apt/lists/*
+
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+
+RUN install-php-extensions rdkafka opentelemetry zip pdo_pgsql mbstring
+
+WORKDIR /var/www/html
+
+COPY --from=composer_builder /var/www/html/vendor /var/www/html/vendor
+
+COPY . /var/www/html
+
+RUN mkdir -p storage/framework/sessions \
+             storage/framework/views \
+             storage/framework/cache \
+             bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 storage bootstrap/cache
+
+
+CMD ["php", "artisan", "list"]

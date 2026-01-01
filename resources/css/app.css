@@ -1,0 +1,77 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+.dede {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding-top: 5px;
+    width: 100%;
+    padding-bottom: 5px
+}
+
+.popo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    padding-bottom: 5px
+}
+
+.chapters-count {
+    text-align: center;
+    width: 100%;
+    padding-bottom: 10px
+}
+
+.chapters-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    justify-content: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+}
+
+.borrow-footer {
+    text-align: center;
+    padding-top: 30px
+}
+
+.borrow-dates-information {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding-top: 5px;
+    width: 100%;
+    padding-bottom: 10px
+}
+
+.borrow-number-information {
+    margin-top: 5px
+}
+
+.notification-data {
+    border-bottom: 1px solid #eee;
+}
+
+.appli-title {
+    text-align: center
+}
+
+.borrow-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
