@@ -19,7 +19,7 @@ class UserRegisterMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'ユーザー登録',
+            subject: '【図書館アプリ】登録完了のお知らせ！',
         );
     }
 
