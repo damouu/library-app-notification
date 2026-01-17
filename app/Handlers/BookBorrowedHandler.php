@@ -51,7 +51,7 @@ class BookBorrowedHandler
                 $dbSpan->end();
             }
 
-            $mailSpan = $tracer->spanBuilder('send_registration_email')->startSpan();
+            $mailSpan = $tracer->spanBuilder('send_borrow_email')->startSpan();
 
             try {
                 Mail::to($user->email)->send(new BookBorrowedMail($notificationData));
