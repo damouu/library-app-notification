@@ -20,7 +20,7 @@ class ConsumeBorrowEvents extends Command
     public function handle(): void
     {
         $consumer = Kafka::consumer(['library.borrow.v1'])
-            ->withConsumerGroupId(config('notification-borrow-group'))
+            ->withConsumerGroupId(env('KAFKA_CONSUMER_GROUP_ID', 'notification-borrow-group'))
             ->withHandler(new BookBorrowedHandler())
             ->build();
 
