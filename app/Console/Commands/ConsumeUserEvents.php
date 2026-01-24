@@ -20,7 +20,7 @@ class ConsumeUserEvents extends Command
     public function handle(): void
     {
         $consumer = Kafka::consumer(['auth-create-topic'])
-            ->withConsumerGroupId(config('kafka.consumer_group_id'))
+            ->withConsumerGroupId(config('notification-user-group'))
             ->withHandler(new KafkaUserHandler())
             ->build();
 
