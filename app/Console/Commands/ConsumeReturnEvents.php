@@ -20,7 +20,7 @@ class ConsumeReturnEvents extends Command
     public function handle(): void
     {
         $consumer = Kafka::consumer(['library.return.v1'])
-            ->withConsumerGroupId(config('notification-return-group'))
+            ->withConsumerGroupId(env('KAFKA_CONSUMER_GROUP_ID', 'notification-return-group'))
             ->withHandler(new BookReturnedHandler())
             ->build();
 
