@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "damou/library-notification-service",
     "type": "project",
-    "description": "図書館システムの認証APIは、アカウントを登録したり削除したりログインしたりすることが図書館システムにこのAPIお通じてできます。",
+    "description": "図書館管理システムのイベントを購読し、新規ユーザー登録や書籍の貸出・返却時にメール通知を非同期で送信するサービスです。",
     "keywords": [
         "laravel",
         "framework"
