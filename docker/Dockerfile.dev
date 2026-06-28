@@ -17,8 +17,8 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install zip pdo pdo_pgsql \
-    && pecl install rdkafka opentelemetry \
-    && docker-php-ext-enable rdkafka opentelemetry
+    && pecl install rdkafka opentelemetry xdebug redis \
+    && docker-php-ext-enable rdkafka opentelemetry xdebug redis
 
 RUN php -m | grep opentelemetry
 
@@ -30,7 +30,7 @@ RUN git config --global --add safe.directory /var/www/html
 
 COPY composer.json composer.lock ./
 
-RUN composer install --no-scripts --no-autoloader
+RUN composer install --no-scripts --no-autoloader --prefer-source
 
 COPY . /var/www/html
 
