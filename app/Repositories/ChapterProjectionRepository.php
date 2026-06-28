@@ -3,22 +3,38 @@
 namespace App\Repositories;
 
 use App\Models\ChapterProjection;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class ChapterProjectionRepository
 {
-    public function firstOrCreate(array $attributes, array $values = []): ChapterProjection
-    {
-        return ChapterProjection::firstOrCreate($attributes, $values);
-    }
-
-    public function findByChapterUuid(string $chapterUuid): ?ChapterProjection
-    {
-        return ChapterProjection::where('chapter_uuid', $chapterUuid)->findOrFail();
-    }
 
     public function exist(string $chapterUuid): bool
     {
         return ChapterProjection::where('chapter_uuid', $chapterUuid)->exists();
+    }
+
+
+    public function findByChapterUuids(array $uuids): Collection
+    {
+        return collect($uuids)
+            ->map(function ($uuid) {
+                $chapter = Cache::remember(
+                    "chapter:uuid:$uuid",
+                    now()->addHours(6),
+                    fn() => $this->fetchChapter($uuid)
+                );
+                return $chapter;
+            })
+            ->filter(fn($chapter) => $chapter !== null)
+            ->values();
+    }
+
+    private function fetchChapter(string $uuid): ?array
+    {
+        return ChapterProjection::where('chapter_uuid', $uuid)
+            ->first()
+            ?->toArray();
     }
 
     public function create(ChapterProjection $chapter): ChapterProjection

@@ -16,12 +16,12 @@
     <div class="notification-data">
 
         <div class="borrow-number-information">
-            <x-borrow-number-information :borrowUUID="$notificationData['borrow_uuid']"/>
+            <x-borrow-number-information :borrowUUID="$borrowEvent->borrowCreatedEventDataDTO->borrow_uuid"/>
         </div>
 
         <div class="borrow-dates-information">
-            <x-borrow-dates-information :borrowStartDate="$notificationData['borrow_start_date']"
-                                        :borrowEndDate="$notificationData['borrow_end_date']"/>
+            <x-borrow-dates-information :borrowStartDate="$borrowEvent->borrowCreatedEventDataDTO->borrow_start_date"
+                                        :borrowEndDate="$borrowEvent->borrowCreatedEventDataDTO->borrow_end_date"/>
         </div>
 
     </div>
@@ -29,11 +29,11 @@
 </div>
 
 <div class="chapters-count">
-    <x-borrow-books-count :chaptersCount="$notificationData['chapters']"/>
+    <x-borrow-books-count :count="$books->count()" />
 </div>
 
 <div class="chapters-list">
-    <x-books-list :notificationData="$notificationData"/>
+    <x-books-list :books="$books"/>
 </div>
 
 <div class="borrow-footer">
