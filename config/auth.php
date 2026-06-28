@@ -44,7 +44,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | User Providers
+    | UserProjection Providers
     |--------------------------------------------------------------------------
     |
     | All authentication guards have a user provider, which defines how the
@@ -59,13 +59,13 @@ return [
     |
     */
 
-    'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
-            'table' => 'users'
-        ],
-    ],
+//    'providers' => [
+//        'users' => [
+//            'driver' => 'eloquent',
+//            'model' => env('AUTH_MODEL', App\Models\UserProjection::class),
+//            'table' => 'users'
+//        ],
+//    ],
 
     /*
     |--------------------------------------------------------------------------

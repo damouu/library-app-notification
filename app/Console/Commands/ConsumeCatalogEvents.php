@@ -23,7 +23,7 @@ class ConsumeCatalogEvents extends Command
     public function handle(): void
     {
         $consumer = Kafka::consumer(['library.catalog.v1'])
-            ->withConsumerGroupId(env('KAFKA_CONSUMER_GROUP_ID', 'notification-catalog-group'))
+            ->withConsumerGroupId(env('KAFKA_CONSUMER_GROUP_ID'))
             ->withHandler($this->laravel->make(CatalogHandler::class))
             ->withMiddleware(KafkaTracingMiddleware::class)
             ->build();

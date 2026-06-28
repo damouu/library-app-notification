@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\UserProjection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<User>
+ * @extends Factory<UserProjection>
  */
 class notification extends Factory
 {

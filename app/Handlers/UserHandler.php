@@ -2,26 +2,32 @@
 
 namespace App\Handlers;
 
-use App\DTO\ChapterCreatedEventDTO;
+use App\DTO\UserCreatedEventDTO;
 use App\Repositories\ProcessedEventRepository;
-use App\Services\CatalogProjectionService;
+use App\Services\UserProjectionService;
+use Exception;
 use Junges\Kafka\Contracts\ConsumerMessage;
 use Junges\Kafka\Contracts\MessageConsumer;
 
-class CatalogHandler
+class UserHandler
 {
 
     public function __construct(
-        private readonly CatalogProjectionService $catalogProjectionService,
+        private readonly UserProjectionService    $userProjectionService,
         private readonly ProcessedEventRepository $eventRepository,
-    ){}
+    )
+    {
+    }
 
+    /**
+     * @throws Exception
+     */
     public function __invoke(ConsumerMessage $message, MessageConsumer $consumer): void
     {
-        $event = ChapterCreatedEventDTO::fromArray((array)$message->getBody());
+        $event = UserCreatedEventDTO::fromArray((array)$message->getBody());
         if ($this->eventRepository->exists($event->metadataDTO->eventUuid)) {
             return;
         }
-        $this->catalogProjectionService->handle($event);
+        $this->userProjectionService->handle($event);
     }
 }

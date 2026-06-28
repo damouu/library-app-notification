@@ -4,27 +4,20 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-
 return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('processed_events', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->unique();
-            $table->uuid('card_uuid')->nullable()->unique();
-            $table->softDeletes();
+            $table->uuid('event_uuid')->unique();
+            $table->string('event_type');
+            $table->timestamp('processed_at');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('processed_events');
     }
 };
