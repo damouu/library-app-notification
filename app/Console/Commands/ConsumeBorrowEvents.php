@@ -22,8 +22,9 @@ class ConsumeBorrowEvents extends Command
     public function handle(): void
     {
         $consumer = Kafka::consumer(['library.borrow.v1'])
-            ->withConsumerGroupId(env('KAFKA_CONSUMER_GROUP_ID', 'notification-borrow-group'))
-            ->withHandler(new BookBorrowedHandler())
+            ->withConsumerGroupId(env('KAFKA_CONSUMER_GROUP_ID'))
+            ->withHandler($this->laravel->make(BookBorrowedHandler::class))
+            ->withMiddleware(KafkaTracingMiddleware::class)
             ->build();
         $consumer->consume();
     }
