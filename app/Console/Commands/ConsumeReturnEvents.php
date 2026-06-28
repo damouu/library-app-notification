@@ -22,8 +22,9 @@ class ConsumeReturnEvents extends Command
     public function handle(): void
     {
         $consumer = Kafka::consumer(['library.return.v1'])
-            ->withConsumerGroupId(env('KAFKA_CONSUMER_GROUP_ID', 'notification-return-group'))
-            ->withHandler(new BookReturnedHandler())
+            ->withConsumerGroupId(env('KAFKA_CONSUMER_GROUP_ID'))
+            ->withHandler($this->laravel->make(BookReturnedHandler::class))
+            ->withMiddleware(KafkaTracingMiddleware::class)
             ->build();
 
         $consumer->consume();
