@@ -3,8 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Handlers\BookReturnedHandler;
+use App\Tracing\KafkaTracingMiddleware;
 use Carbon\Exceptions\Exception;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Junges\Kafka\Exceptions\ConsumerException;
 use Junges\Kafka\Facades\Kafka;
 
@@ -15,7 +17,7 @@ class ConsumeReturnEvents extends Command
 
     /**
      * @throws Exception
-     * @throws ConsumerException
+     * @throws ConsumerException|BindingResolutionException
      */
     public function handle(): void
     {
