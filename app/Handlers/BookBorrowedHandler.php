@@ -14,6 +14,14 @@ use OpenTelemetry\API\Trace\Propagation\TraceContextPropagator;
 
 class BookBorrowedHandler
 {
+
+    public function __construct(
+        private readonly BorrowService            $borrowService,
+        private readonly ProcessedEventRepository $eventRepository,
+    )
+    {
+    }
+
     /**
      * @throws Exception
      */
