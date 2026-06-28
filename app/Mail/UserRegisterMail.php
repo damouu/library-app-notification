@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\UserProjection;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -12,7 +13,9 @@ class UserRegisterMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public string $bookTitle)
+    public function __construct(
+        public UserProjection $userProjection
+    )
     {
     }
 
@@ -27,6 +30,9 @@ class UserRegisterMail extends Mailable
     {
         return new Content(
             view: 'emails.user-registration',
+            with: [
+                'userProjection' => $this->userProjection,
+            ],
         );
     }
 }
