@@ -17,18 +17,18 @@
 
     <div class="notification-data">
         <div class="borrow-number-information">
-            <x-borrow-number-information :borrowUUID="$notificationData['borrow_uuid']"/>
+            <x-borrow-number-information :borrowUUID="$returnBorrowEvent->returnCreatedEventDataDTO->borrowUuid"/>
         </div>
         <div class="dede">
-            <x-return-dates-information :borrowStartDate="$notificationData['borrow_start_date']"
-                                        :borrowEndDate="$notificationData['borrow_end_date']"
-                                        :borrowReturnDate="$notificationData['borrow_return_date']"/>
+            <x-return-dates-information :borrowStartDate="$returnBorrowEvent->returnCreatedEventDataDTO->borrowStartDate"
+                                        :borrowEndDate="$returnBorrowEvent->returnCreatedEventDataDTO->borrowEndDate"
+                                        :borrowReturnDate="$returnBorrowEvent->returnCreatedEventDataDTO->borrowReturnDate"/>
         </div>
         <div class="popo">
-            @if($notificationData['return_lately'])
-                <x-return-lately-notice :endDate="Carbon::parse($notificationData['borrow_end_date'])"
-                                        :daysLate="$notificationData['days_late']"
-                                        :fine="$notificationData['late_fee']"/>
+            @if($returnBorrowEvent->returnCreatedEventDataDTO->returnLately)
+                <x-return-lately-notice :endDate="Carbon::parse($returnBorrowEvent->returnCreatedEventDataDTO->borrowEndDate)"
+                                        :daysLate="$returnBorrowEvent->returnCreatedEventDataDTO->daysLate"
+                                        :fine="$returnBorrowEvent->returnCreatedEventDataDTO->lateFee"/>
             @else
                 <x-return-on-time-notice/>
             @endif
@@ -38,11 +38,11 @@
 
 
 <div class="chapters-count">
-    <x-return-books-count :chaptersCount="$notificationData['chapters']"/>
+    <x-return-books-count :books="$books->count()"/>
 </div>
 
 <div class="chapters-list">
-    <x-books-list :notificationData="$notificationData"/>
+    <x-books-list :books="$books"/>
 </div>
 
 <div class="borrow-footer">
