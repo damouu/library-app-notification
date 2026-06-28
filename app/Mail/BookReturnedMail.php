@@ -2,17 +2,23 @@
 
 namespace App\Mail;
 
+use App\DTO\ReturnCreatedEventDTO;
+use App\Models\UserProjection;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 
 class BookReturnedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public array $notificationData)
+    public function __construct(
+        public ReturnCreatedEventDTO $returnCreatedEventDTO,
+        public UserProjection        $userProjection,
+        public Collection            $books)
     {
     }
 
@@ -28,7 +34,9 @@ class BookReturnedMail extends Mailable
         return new Content(
             view: 'emails.book-returned',
             with: [
-                'notificationData' => $this->notificationData,
+                'returnBorrowEvent' => $this->returnCreatedEventDTO,
+                'userProjection' => $this->userProjection,
+                'books' => $this->books,
             ],
         );
     }
