@@ -2,7 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Handlers\KafkaUserHandler;
+use App\Handlers\UserHandler;
+use App\Tracing\KafkaTracingMiddleware;
 use Carbon\Exceptions\Exception;
 use Illuminate\Console\Command;
 use Junges\Kafka\Exceptions\ConsumerException;
@@ -20,8 +21,9 @@ class ConsumeUserEvents extends Command
     public function handle(): void
     {
         $consumer = Kafka::consumer(['auth-create-topic'])
-            ->withConsumerGroupId(env('KAFKA_CONSUMER_GROUP_ID', 'notification-user-group'))
-            ->withHandler(new KafkaUserHandler())
+            ->withConsumerGroupId(env('KAFKA_CONSUMER_GROUP_ID'))
+            ->withHandler($this->laravel->make(UserHandler::class))
+            ->withMiddleware(KafkaTracingMiddleware::class)
             ->build();
 
         $consumer->consume();
