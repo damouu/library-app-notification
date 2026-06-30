@@ -8,6 +8,7 @@ use App\Repositories\ProcessedEventRepository;
 use App\Repositories\UserProjectionRepository;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 
 readonly class UserProjectionService
