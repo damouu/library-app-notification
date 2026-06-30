@@ -3,9 +3,18 @@
 namespace App\Repositories;
 
 use App\Models\ProcessedEvent;
+use App\Services\TracingService;
 
 class ProcessedEventRepository
 {
+
+    public function __construct
+    (
+        private TracingService $tracingService
+    )
+    {
+    }
+
     public function exists(string $eventUuid): bool
     {
         return ProcessedEvent::where('event_uuid', $eventUuid)->exists();
@@ -13,10 +22,17 @@ class ProcessedEventRepository
 
     public function save(string $eventUuid, string $eventType): void
     {
-        ProcessedEvent::create([
-            'event_uuid' => $eventUuid,
-            'event_type' => $eventType,
-            'processed_at' => now(),
-        ]);
+        $this->tracingService->trace(
+            'repository.processed_event.save',
+            function () use ($eventUuid, $eventType) {
+                ProcessedEvent::create([
+                    'event_uuid' => $eventUuid,
+                    'event_type' => $eventType,
+                    'processed_at' => now(),
+                ]);
+            }, [
+                'db.collection' => 'processed_events',
+            ]
+        );
     }
 }
