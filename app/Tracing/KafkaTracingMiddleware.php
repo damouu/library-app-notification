@@ -6,6 +6,7 @@ use Junges\Kafka\Contracts\ConsumerMessage;
 use Junges\Kafka\Contracts\Middleware;
 use OpenTelemetry\API\Globals;
 use OpenTelemetry\API\Trace\Propagation\TraceContextPropagator;
+use OpenTelemetry\API\Trace\StatusCode;
 use Throwable;
 
 class KafkaTracingMiddleware implements Middleware
@@ -21,26 +22,34 @@ class KafkaTracingMiddleware implements Middleware
 
         $tracer = Globals::tracerProvider()->getTracer('notification-service');
 
-        $span = $tracer->spanBuilder('kafka.consume')
+        $span = $tracer
+            ->spanBuilder('kafka.consume')
             ->setParent($parentContext)
             ->startSpan();
 
         $scope = $span->activate();
 
         try {
-            $span->setAttribute('kafka.topic', $message->getTopicName() ?? 'unknown');
-            $span->setAttribute('kafka.partition', $message->getPartition());
-            $span->setAttribute('kafka.offset', $message->getOffset());
+            $span->setAttribute('messaging.system', 'kafka');
+            $span->setAttribute('messaging.operation', 'process');
+            $span->setAttribute('messaging.destination.name', $message->getTopicName() ?? 'unknown');
+            $span->setAttribute('messaging.kafka.partition', $message->getPartition());
+            $span->setAttribute('messaging.kafka.offset', $message->getOffset());
+
+            if ($message->getKey() !== null) {
+                $span->setAttribute('messaging.message.id', (string)$message->getKey());
+            }
 
             $next($message, $next);
-
         } catch (Throwable $e) {
             $span->recordException($e);
-            throw $e;
+            $span->setStatus(StatusCode::STATUS_ERROR);
 
+            throw $e;
         } finally {
-            $span->end();
             $scope->detach();
+            $span->end();
+
             Globals::tracerProvider()->forceFlush();
         }
     }
