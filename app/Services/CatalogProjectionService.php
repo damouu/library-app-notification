@@ -16,19 +16,29 @@ readonly class CatalogProjectionService
         private ChapterProjectionRepository $chapterProjectionRepository,
         private ChapterProjectionMapper     $chapterProjectionMapper,
         private ProcessedEventRepository    $eventRepository,
+        private TracingService              $tracingService,
     )
     {
     }
 
     public function handle(ChapterCreatedEventDTO $event): void
     {
-        $chapter = $this->chapterProjectionMapper->toModel($event->chapterCreatedEventDataDTO);
-        try {
-            $this->chapterProjectionRepository->create($chapter);
-        } catch (UniqueConstraintViolationException $e) {
-            return;
-        }
-        $this->eventRepository->save($event->metadataDTO->eventUuid, $event->metadataDTO->eventType);
-        Log::info("new chapter process completed successfully");
+        $this->tracingService->trace(
+            'catalog_projection.process_created_event',
+            function () use ($event): void {
+                $chapter = $this->chapterProjectionMapper->toModel($event->chapterCreatedEventDataDTO);
+                try {
+                    $this->chapterProjectionRepository->create($chapter);
+                } catch (UniqueConstraintViolationException $e) {
+                    return;
+                }
+                $this->eventRepository->save($event->metadataDTO->eventUuid, $event->metadataDTO->eventType);
+                Log::info("new chapter process completed successfully");
+            }, [
+                'event.uuid' => $event->metadataDTO->eventUuid,
+                'event.type' => $event->metadataDTO->eventType,
+                'chapter.uuid' => $event->chapterCreatedEventDataDTO->chapterUuid,
+            ]
+        );
     }
 }
