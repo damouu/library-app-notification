@@ -13,18 +13,51 @@ use Illuminate\Support\Facades\Mail;
 
 class MailService
 {
+    public function __construct
+    (
+        private TracingService $tracingService
+    )
+    {
+    }
+
     public function sendUserRegistered(UserProjection $user): void
     {
-        Mail::to($user->email)->send(new UserRegisterMail($user));
+        $this->tracingService->trace(
+            'mail.user_registered.send',
+            function () use ($user) {
+                Mail::to($user->email)->send(new UserRegisterMail($user));
+            }, [
+                'mail.template' => UserRegisterMail::class,
+                'mail.transport' => config('mail.default'),
+            ]
+        );
     }
 
     public function sendBorrow(BorrowCreatedEventDTO $borrowCreatedEventDTO, UserProjection $user, Collection $books): void
     {
-        Mail::to($user->email)->send(new BookBorrowedMail($borrowCreatedEventDTO, $user, $books));
+        $this->tracingService->trace(
+            'mail.borrow_created.send',
+            function () use ($borrowCreatedEventDTO, $user, $books) {
+                Mail::to($user->email)->send(new BookBorrowedMail($borrowCreatedEventDTO, $user, $books));
+            }, [
+                'mail.template' => BookBorrowedMail::class,
+                'mail.transport' => config('mail.default'),
+                'books.count' => $books->count(),
+            ]
+        );
     }
 
     public function sendReturn(ReturnCreatedEventDTO $returnCreatedEventDTO, UserProjection $user, Collection $books): void
     {
-        Mail::to($user->email)->send(new BookReturnedMail($returnCreatedEventDTO, $user, $books));
+        $this->tracingService->trace(
+            'mail.return_created.send',
+            function () use ($returnCreatedEventDTO, $user, $books) {
+                Mail::to($user->email)->send(new BookReturnedMail($returnCreatedEventDTO, $user, $books));
+            }, [
+                'mail.template' => BookReturnedMail::class,
+                'mail.transport' => config('mail.default'),
+                'books.count' => $books->count(),
+            ]
+        );
     }
 }
