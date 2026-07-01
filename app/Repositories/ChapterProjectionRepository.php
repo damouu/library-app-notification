@@ -6,6 +6,7 @@ use App\Models\ChapterProjection;
 use App\Services\TracingService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 
 class ChapterProjectionRepository
 {
@@ -39,6 +40,31 @@ class ChapterProjectionRepository
                     })
                     ->filter(fn($chapter) => $chapter !== null)
                     ->values();
+            }
+        );
+    }
+
+    public function findPopular(int $limit = 3): Collection
+    {
+        return $this->tracingService->trace(
+            'repository.chapter_projection.findPopular',
+            function () use ($limit) {
+
+                $allKeys = Redis::connection('cache')->keys('laravel-cache-chapter:uuid:*');
+
+                if (empty($allKeys)) {
+                    return collect();
+                }
+
+                $cleanKeys = array_map(function ($key) {
+                    return str_replace('laravel-database-laravel-cache-', '', $key);
+                }, $allKeys);
+
+                $slicedKeys = array_slice($cleanKeys, 0, $limit);
+
+                $chapters = Cache::many($slicedKeys);
+
+                return collect($chapters)->filter()->values();
             }
         );
     }
