@@ -20,12 +20,12 @@ class MailService
     {
     }
 
-    public function sendUserRegistered(UserProjection $user): void
+    public function sendUserRegistered(UserProjection $user, Collection $popularChapters): void
     {
         $this->tracingService->trace(
             'mail.user_registered.send',
-            function () use ($user) {
-                Mail::to($user->email)->send(new UserRegisterMail($user));
+            function () use ($user, $popularChapters) {
+                Mail::to($user->email)->send(new UserRegisterMail($user, $popularChapters));
             }, [
                 'mail.template' => UserRegisterMail::class,
                 'mail.transport' => config('mail.default'),
