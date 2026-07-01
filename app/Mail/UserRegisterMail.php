@@ -8,13 +8,15 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 
 class UserRegisterMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public function __construct(
-        public UserProjection $userProjection
+        private readonly UserProjection $userProjection,
+        private readonly Collection     $popularChapters,
     )
     {
     }
@@ -32,6 +34,7 @@ class UserRegisterMail extends Mailable
             view: 'emails.user-registration',
             with: [
                 'userProjection' => $this->userProjection,
+                'popularChapters' => $this->popularChapters,
             ],
         );
     }
