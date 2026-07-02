@@ -32,7 +32,7 @@ RUN apt-get update && apt-get install -y procps && rm -rf /var/lib/apt/lists/*
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
-RUN install-php-extensions rdkafka opentelemetry zip pdo_pgsql mbstring
+RUN install-php-extensions rdkafka opentelemetry zip pdo_pgsql mbstring redis
 
 WORKDIR /var/www/html
 
