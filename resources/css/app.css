@@ -72,6 +72,21 @@
     border-top: 1px solid #eee;
 }
 
+.return-lately {
+    color: #f8f9fa;
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 10px 0 0 5px;
+}
+
+.return-on-time {
+    color: #f8f9fa;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 10px 0 0 0;
+    text-align: center;
+}
+
 .borrow-dates-information {
     display: flex;
     justify-content: center;
