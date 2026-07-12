@@ -57,5 +57,5 @@
 </div>
 
 <div class="borrow-footer">
-    <x-borrow-footer :isLate="$returnBorrowEvent->returnCreatedEventDataDTO->returnLately"/>
+    <x-borrow-footer-return :isLate="$returnBorrowEvent->returnCreatedEventDataDTO->returnLately"/>
 </div>
