@@ -23,8 +23,8 @@
 .user-avatar {
     display: block;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border: 1px solid var(--font-sans);
     border-block-color: #ff5252;
 }
@@ -41,7 +41,8 @@
 .chapters-count {
     text-align: center;
     width: 100%;
-    padding-bottom: 10px
+    margin-top: 50px;
+    padding-bottom: 30px
 }
 
 .chapters-list {
@@ -50,7 +51,7 @@
     gap: 50px;
     justify-content: center;
     padding-bottom: 20px;
-    margin-top: 10px
+    margin-top: 10px;
 }
 
 .member_card {
@@ -67,7 +68,8 @@
 
 .borrow-footer {
     text-align: center;
-    padding-top: 30px
+    padding-top: 30px;
+    border-top: 1px solid #eee;
 }
 
 .borrow-dates-information {
@@ -81,7 +83,7 @@
 }
 
 .borrow-number-information {
-    margin-top: 5px
+    margin-top: 40px
 }
 
 .notification-data {
@@ -90,7 +92,9 @@
 
 
 .appli-title {
-    text-align: center
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .user-email {

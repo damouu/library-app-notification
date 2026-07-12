@@ -9,6 +9,11 @@
 </div>
 
 <div style="margin-top: 30px">
+
+    <div class="appli-title">
+        <x-user-information :user-projection="$userProjection"/>
+    </div>
+
     <div class="appli-title">
         <x-borrow-title/>
     </div>
