@@ -1,2 +1,11 @@
-<p style="color: orange">
-    ※返却期限を過ぎた場合、1日につき500円の延滞金が発生いたします。ご注意ください。</p>
+@props(['isLate'])
+
+@if($isLate)
+    <p style="color: orange; font-size: 13px; text-align: center;">
+        ※延滞金のお支払いは、次回のご来館時に窓口にてお願いいたします。
+    </p>
+@else
+    <p style="color: #a0aec0; font-size: 13px; text-align: center;">
+        ※またのご利用を心よりお待ちしております。
+    </p>
+@endif

@@ -5,9 +5,10 @@
     <p style="color: #ff5252; font-weight: bold; margin: 0; font-size: 16px; text-align: center;">
         【重要】返却期限超過のお知らせ
     </p>
-    <p style="color: #333; font-size: 14px; line-height: 1.6; margin: 10px 0 0 5px;">
-        恐れ入りますが、図書の返却期限日（{{ $endDate->format('Y/m/d') }}）を<strong>{{ $daysLate }}
-            日</strong>経過しての返却となりました。<br>
-        規定に基づき、延滞金として<strong>{{ number_format($fine) }}円</strong>が発生いたしましたので、窓口にでお支払いをお願いいたします。
+
+    <p class="return-lately">
+        恐れ入りますが、図書の返却期限日（{{ $endDate->format('Y/m/d') }}）を<b> <span style="color: orange;">{{ $daysLate }}
+                日</span></b>経過しての返却となりました。<br>
+        規定に基づき、延滞金として<b> <span style="color: orange;">{{ number_format($fine) }}円 </span> </b>が発生いたしましたので、窓口にでお支払いをお願いいたします。
     </p>
 </div>
