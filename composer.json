@@ -17,6 +17,7 @@
         "open-telemetry/opentelemetry": "^1.0",
         "open-telemetry/sdk": "^1.0",
         "php-http/httplug": "^2.4",
+        "resend/resend-php": "^1.5",
         "spatie/laravel-data": "^4.0",
         "symfony/http-client": "^6.4",
         "symfony/resend-mailer": "^8.1"
@@ -26,6 +27,7 @@
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",
+        "laravel/tinker": "^3.0",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "phpunit/phpunit": "^11.5.3"
