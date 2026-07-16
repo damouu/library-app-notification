@@ -6,8 +6,9 @@
             <img
                 src="{{ $userProjection->avatar_img_url }}"
                 alt="User avatar"
-                class="user-avatar"
-                style="display: block; border-radius: 50%; object-fit: cover;"
+                width="50"
+                height="50"
+                style="display: block; width: 20px; height: 20px; border-radius: 50%; object-fit: cover; border: 1px solid #ff5252;"
             >
         </td>
 
