@@ -1,7 +1,7 @@
 @foreach($books as $chapter)
     <div>
         @if(data_get($chapter, 'cover_artwork_url'))
-            <a href="https://api.damou.dev/api/catalogue/public/chapters/{{ data_get($chapter, 'chapter_uuid') }}">
+            <a href="https://library.damou.dev/chapter/{{ data_get($chapter, 'chapter_uuid') }}">
                 <img
                     src="{{ data_get($chapter, 'cover_artwork_url') }}"
                     alt="{{ data_get($chapter, 'title') }}"
