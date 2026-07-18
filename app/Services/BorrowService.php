@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DTO\BorrowCreatedEventDTO;
 use App\Repositories\ChapterProjectionRepository;
 use App\Repositories\ProcessedEventRepository;
+use App\Repositories\TrendingChapterRepository;
 use App\Repositories\UserProjectionRepository;
 use Illuminate\Support\Facades\Log;
 
@@ -17,6 +18,7 @@ readonly class BorrowService
         private ProcessedEventRepository    $eventRepository,
         private MailService                 $mailService,
         private TracingService              $tracingService,
+        private TrendingChapterRepository   $trendingChapterRepository,
     )
     {
     }
@@ -30,12 +32,10 @@ readonly class BorrowService
                 if ($user === null) {
                     return;
                 }
-                $chapterUuids = array_map(
-                    fn($item) => $item->chapterUuid,
-                    $event->borrowCreatedEventDataDTO->borrowedItems
-                );
+                $chapterUuids = array_map(fn($item) => $item->chapterUuid, $event->borrowCreatedEventDataDTO->borrowedItems);
                 $chapters = $this->chapterProjectionRepository->findByChapterUuids($chapterUuids);
                 $this->eventRepository->save($event->metadataDTO->eventUuid, $event->metadataDTO->eventType);
+                $this->trendingChapterRepository->push($chapters);
                 $this->mailService->sendBorrow($event, $user, $chapters);
                 Log::info('Borrow event processed successfully');
             }, [
