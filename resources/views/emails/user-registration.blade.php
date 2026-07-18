@@ -31,7 +31,7 @@
         </div>
 
         <div style="margin-top: 24px; border-bottom: 1px solid #eee;">
-            <x-catalog-button url="http://localhost:3002/series?page=1"/>
+            <x-catalog-button url="https://api.damou.dev/api/catalogue/public/series?page=1"/>
             <p style="text-align:center; color:#6b7280; font-size: 14px; margin-top: 16px;">
                 あなたにぴったりの一冊が見つかりますように。📚
             </p>
