@@ -1,5 +1,5 @@
 @props([
-    'url' => 'http://localhost:8080/catalog'
+    'url' => 'https://api.damou.dev/api/catalogue/public/chapters/'
 ])
 
 <div style="text-align:center; margin:32px 0;">
