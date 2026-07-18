@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\DTO\UserCreatedEventDTO;
 use App\Mappers\UserProjectionMapper;
-use App\Repositories\ChapterProjectionRepository;
 use App\Repositories\ProcessedEventRepository;
+use App\Repositories\TrendingChapterRepository;
 use App\Repositories\UserProjectionRepository;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\Log;
@@ -15,12 +15,12 @@ use Throwable;
 readonly class UserProjectionService
 {
     public function __construct(
-        private UserProjectionRepository    $userProjectionRepository,
-        private UserProjectionMapper        $userProjectionMapper,
-        private ProcessedEventRepository    $eventRepository,
-        private MailService                 $mailService,
-        private TracingService              $tracingService,
-        private ChapterProjectionRepository $chapterProjectionRepository,
+        private UserProjectionRepository  $userProjectionRepository,
+        private UserProjectionMapper      $userProjectionMapper,
+        private ProcessedEventRepository  $eventRepository,
+        private MailService               $mailService,
+        private TracingService            $tracingService,
+        private TrendingChapterRepository $trendingChapterRepository
     )
     {
     }
@@ -40,8 +40,8 @@ readonly class UserProjectionService
                     return;
                 }
                 $this->eventRepository->save($event->metadataDTO->eventUuid, $event->metadataDTO->eventType);
-                $popularChapters = $this->chapterProjectionRepository->findPopular();
-                $this->mailService->sendUserRegistered($userProjection, $popularChapters);
+                $trendingChapters = $this->trendingChapterRepository->latest(3);
+                $this->mailService->sendUserRegistered($userProjection, $trendingChapters);
                 Log::info("new user process completed successfully");
             }, [
                 'event.uuid' => $event->metadataDTO->eventUuid,
