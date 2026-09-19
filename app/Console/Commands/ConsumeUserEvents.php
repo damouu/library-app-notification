@@ -21,7 +21,16 @@ class ConsumeUserEvents extends Command
     public function handle(): void
     {
         $consumer = Kafka::consumer(['auth-create-topic'])
-            ->withConsumerGroupId(env('KAFKA_CONSUMER_GROUP_ID'))
+            ->withSasl(
+                username: config('kafka.sasl.username'),
+                password: config('kafka.sasl.password'),
+                mechanisms: config('kafka.sasl.mechanisms'),
+                securityProtocol: config('kafka.securityProtocol'),
+            )
+            ->withOptions([
+                'ssl.ca.location' => config('kafka.ca_location'),
+            ])
+            ->withConsumerGroupId(config('kafka.consumer_group_id'))
             ->withHandler($this->laravel->make(UserHandler::class))
             ->withMiddleware(KafkaTracingMiddleware::class)
             ->build();

@@ -23,7 +23,16 @@ class ConsumeCatalogEvents extends Command
     public function handle(): void
     {
         $consumer = Kafka::consumer(['library.catalog.v1'])
-            ->withConsumerGroupId(env('KAFKA_CONSUMER_GROUP_ID'))
+            ->withSasl(
+                username: config('kafka.sasl.username'),
+                password: config('kafka.sasl.password'),
+                mechanisms: config('kafka.sasl.mechanisms'),
+                securityProtocol: config('kafka.securityProtocol'),
+            )
+            ->withOptions([
+                'ssl.ca.location' => config('kafka.ca_location'),
+            ])
+            ->withConsumerGroupId(config('kafka.consumer_group_id'))
             ->withHandler($this->laravel->make(CatalogHandler::class))
             ->withMiddleware(KafkaTracingMiddleware::class)
             ->build();
