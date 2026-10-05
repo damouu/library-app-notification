@@ -54,15 +54,20 @@ jobs:
         run: |
           sed -i \
             "s#^  tag: .*#  tag: ${SHA}#" \
-            gitops/deployment/kubernetes/notification/values.yaml
+            gitops/kubernetes/notification/values.yaml
+
+      - name: Verify Notification image
+        run: |
+          grep -A2 "^image:" gitops/kubernetes/notification/values.yaml
 
       - name: Validate Notification Helm chart
         run: |
-          helm lint gitops/deployment/kubernetes/notification
+          helm lint gitops/kubernetes/notification
 
       - name: Render Notification Helm chart
         run: |
-          helm template notification gitops/deployment/kubernetes/notification > /tmp/notification-rendered.yaml
+          helm template notification gitops/kubernetes/notification \
+            > /tmp/notification-rendered.yaml
 
       - name: Commit GitOps manifest
         env:
@@ -73,7 +78,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add deployment/kubernetes/notification/values.yaml
+          git add kubernetes/notification/values.yaml
 
           git commit -m "chore(notification): deploy ${SHA}" || exit 0
 
