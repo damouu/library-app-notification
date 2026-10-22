@@ -1,15 +1,17 @@
 name: merge
+
 on:
   pull_request:
     types:
       - labeled
+
 jobs:
   automerge:
     runs-on: ubuntu-latest
     steps:
       - name: merge
-        uses: "pascalgn/automerge-action@v0.14.3"
+        uses: pascalgn/automerge-action@04dfc9eae2586d19b7362d4f6413c48135d9c25a
         env:
-          GITHUB_TOKEN: ${{ secrets.MyWorkflow  }}
+          GITHUB_TOKEN: ${{ secrets.MyWorkflow }}
           MERGE_LABELS: "Staging,automerge"
           MERGE_REMOVE_LABELS: "Staging,automerge,TestsPassed"
