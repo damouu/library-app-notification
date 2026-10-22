@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
       - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@d52fc211a0436f8839a587b3b5b8efddab4744ea
         with:
           php-version: '8.4'
           extensions: mbstring, intl, pdo_pgsql, rdkafka, opentelemetry
@@ -25,7 +25,7 @@ jobs:
 
       - name: Cache Composer packages
         id: composer-cache
-        uses: actions/cache@v3
+        uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c
         with:
           path: vendor
           key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
@@ -40,7 +40,7 @@ jobs:
 
       - name: Create an issue
         if: ${{ failure() }}
-        uses: JasonEtco/create-an-issue@v2
+        uses: JasonEtco/create-an-issue@1b14a70e4d8dc185e5cc76d3bec9eab20257b2c5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           actor: ${{ github.actor }}
@@ -55,7 +55,7 @@ jobs:
 
       - name: pull-request
         if: ${{ success() }}
-        uses: repo-sync/pull-request@v2
+        uses: repo-sync/pull-request@1b6c62644f972d1a4cf98835ed1efe728d7497a8
         env:
           GITHUB_TOKEN: ${{ secrets.MYWORKFLOW  }}
         with:
@@ -68,7 +68,7 @@ jobs:
 
       - name: move youtrack-test-failed
         if: ${{ failure() }}
-        uses: bloobirds-it/action-youtrack-move@v1.0.0
+        uses: bloobirds-it/action-youtrack-move@2d323980954263fb5ee24772d66207387a21ae12
         with:
           github-token: ${{ secrets.MyWorkflow }}
           yt-url: ${{ secrets.YOUTRACK_URL }}
