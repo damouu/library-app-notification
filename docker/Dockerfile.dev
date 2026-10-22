@@ -1,39 +1,49 @@
+
 FROM php:8.4-cli AS dev
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    zip \
-    unzip \
-    git \
-    curl \
-    libzip-dev \
-    libonig-dev \
-    libssl-dev \
-    pkg-config \
-    librdkafka-dev \
-    libpq-dev \
-    procps \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        curl \
+        git \
+        libonig-dev \
+        libpq-dev \
+        librdkafka-dev \
+        libssl-dev \
+        libzip-dev \
+        pkg-config \
+        procps \
+        unzip \
+        zip \
+    && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-install pdo pdo_pgsql zip \
+    && pecl install rdkafka opentelemetry redis xdebug \
+    && docker-php-ext-enable rdkafka opentelemetry redis xdebug \
+    && php -m | grep -i opentelemetry
 
-RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install zip pdo pdo_pgsql \
-    && pecl install rdkafka opentelemetry xdebug redis \
-    && docker-php-ext-enable rdkafka opentelemetry xdebug redis
-
-RUN php -m | grep opentelemetry
-
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
 WORKDIR /var/www/html
 
 RUN git config --global --add safe.directory /var/www/html
 
-COPY composer.json composer.lock ./
+COPY --chown=www-data:www-data composer.json composer.lock ./
 
-RUN composer install --no-scripts --no-autoloader --prefer-source
+USER www-data
 
-COPY . /var/www/html
+RUN composer install \
+    --no-scripts \
+    --no-autoloader \
+    --prefer-source \
+    --no-interaction
 
-RUN composer dump-autoload --optimize
+COPY --chown=www-data:www-data . .
+
+RUN composer dump-autoload --optimize \
+    && mkdir -p \
+        storage/framework/cache \
+        storage/framework/sessions \
+        storage/framework/views \
+        bootstrap/cache
 
 CMD ["php", "artisan", "list"]
