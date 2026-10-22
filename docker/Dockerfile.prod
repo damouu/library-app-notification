@@ -1,22 +1,23 @@
 FROM php:8.4-cli AS composer_builder
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
-    zip \
-    unzip \
     curl \
     git \
-    libzip-dev \
     libonig-dev \
-    libssl-dev \
-    pkg-config \
-    librdkafka-dev \
     libpq-dev \
-    procps \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    librdkafka-dev \
+    libssl-dev \
+    libzip-dev \
+    pkg-config \
+    unzip \
+    zip \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install zip pdo pdo_pgsql \
+
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
+RUN docker-php-ext-install pdo pdo_pgsql zip \
     && pecl install rdkafka opentelemetry redis \
     && docker-php-ext-enable rdkafka opentelemetry redis
 
@@ -24,28 +25,48 @@ WORKDIR /var/www/html
 
 COPY composer.json composer.lock ./
 
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+RUN composer install \
+    --no-dev \
+    --prefer-dist \
+    --no-interaction \
+    --no-progress \
+    --optimize-autoloader \
+    --no-scripts
+
 
 FROM php:8.4-cli AS production
 
-RUN apt-get update && apt-get install -y procps && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends procps \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+COPY --from=mlocati/php-extension-installer:2.7 \
+    /usr/bin/install-php-extensions \
+    /usr/local/bin/install-php-extensions
 
-RUN install-php-extensions rdkafka opentelemetry zip pdo_pgsql mbstring redis
+RUN install-php-extensions \
+    mbstring \
+    opentelemetry \
+    pdo_pgsql \
+    rdkafka \
+    redis \
+    zip
 
 WORKDIR /var/www/html
 
-COPY --from=composer_builder /var/www/html/vendor /var/www/html/vendor
+COPY --from=composer_builder --chown=www-data:www-data \
+    /var/www/html/vendor ./vendor
 
-COPY . /var/www/html
+COPY --chown=www-data:www-data . .
 
-RUN mkdir -p storage/framework/sessions \
-             storage/framework/views \
-             storage/framework/cache \
-             bootstrap/cache \
-    && chown -R www-data:www-data /var/www/html \
+RUN mkdir -p \
+    storage/framework/cache \
+    storage/framework/sessions \
+    storage/framework/views \
+    bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
+USER www-data
 
 CMD ["php", "artisan", "list"]
